@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, LayoutChangeEvent } from 'react-native';
+import React, { useMemo, useCallback, useRef, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { useTheme, type Theme } from '@/constants/theme';
@@ -22,17 +22,31 @@ export const SegmentTabs: React.FC<SegmentTabsProps> = ({
   const styles = useMemo(() => makeStyles(theme), [theme]);
   const indicatorX = useSharedValue(0);
   const tabWidth = useSharedValue(0);
+  const tabLayouts = useRef<Record<string, { x: number; width: number }>>({});
+
+  const updateIndicator = useCallback((key: string) => {
+    const layout = tabLayouts.current[key];
+    if (layout && layout.width > 0) {
+      indicatorX.value = withSpring(layout.x, { damping: 20, stiffness: 220 });
+      tabWidth.value = withSpring(layout.width, { damping: 20, stiffness: 220 });
+    }
+  }, [indicatorX, tabWidth]);
+
+  useEffect(() => {
+    updateIndicator(value);
+  }, [value, updateIndicator]);
 
   const handlePress = useCallback((key: string) => {
     if (key !== value) {
       hapticLight();
+      updateIndicator(key);
       onChange(key);
     }
-  }, [value, onChange]);
+  }, [value, onChange, updateIndicator]);
 
   const indicatorStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: indicatorX.value }],
-    width: tabWidth.value,
+    width: tabWidth.value > 0 ? tabWidth.value : `${100 / options.length}%` as any,
   }));
 
   const gradientColors = goldAccent ? theme.colors.goldGradient : theme.colors.primaryGradient;
@@ -57,9 +71,9 @@ export const SegmentTabs: React.FC<SegmentTabsProps> = ({
             onPress={() => handlePress(o.key)}
             onLayout={(e) => {
               const { x, width } = e.nativeEvent.layout;
-              if (active) {
-                indicatorX.value = withSpring(x, { damping: 18, stiffness: 180 });
-                tabWidth.value = withSpring(width, { damping: 18, stiffness: 180 });
+              tabLayouts.current[o.key] = { x, width };
+              if (o.key === value) {
+                updateIndicator(value);
               }
             }}
             accessibilityRole="button"
