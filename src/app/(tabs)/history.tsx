@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAppDb } from '@/lib/dbProvider';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme, ThemePreference } from '@/constants/theme';
@@ -35,7 +35,7 @@ import { hapticLight, hapticSuccess } from '@/utils/haptic';
 
 export default function HistoryAndSettingsScreen() {
   const { theme, themePreference, setThemePreference } = useTheme();
-  const db = useSQLiteContext();
+  const db = useAppDb();
 
   const [mainTab, setMainTab] = useState<'history' | 'settings'>('history');
   const [historyFilter, setHistoryFilter] = useState<'all' | 'emas' | 'padi'>('all');

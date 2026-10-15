@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAppDb } from '@/lib/dbProvider';
 import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme } from '@/constants/theme';
@@ -37,7 +37,7 @@ import { hapticLight, hapticSuccess } from '@/utils/haptic';
 
 export default function ZakatPadiScreen() {
   const { theme } = useTheme();
-  const db = useSQLiteContext();
+  const db = useAppDb();
 
   const [refreshing, setRefreshing] = useState(false);
   const [gkpKg, setGkpKg] = useState<number>(1000); // Default 1.000 kg GKP

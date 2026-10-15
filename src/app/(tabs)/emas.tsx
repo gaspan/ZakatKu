@@ -10,7 +10,7 @@ import {
   Platform,
 } from 'react-native';
 import { useFocusEffect } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAppDb } from '@/lib/dbProvider';
 import { Ionicons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 
@@ -56,7 +56,7 @@ import { hapticLight, hapticSuccess } from '@/utils/haptic';
 
 export default function ZakatEmasScreen() {
   const { theme } = useTheme();
-  const db = useSQLiteContext();
+  const db = useAppDb();
 
   const [refreshing, setRefreshing] = useState(false);
   const [wallets, setWallets] = useState<Wallet[]>([]);

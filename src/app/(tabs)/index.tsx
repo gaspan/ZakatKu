@@ -9,7 +9,7 @@ import {
   Platform,
 } from 'react-native';
 import { useFocusEffect, router } from 'expo-router';
-import { useSQLiteContext } from 'expo-sqlite';
+import { useAppDb } from '@/lib/dbProvider';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import dayjs from 'dayjs';
@@ -38,7 +38,7 @@ import { hapticLight } from '@/utils/haptic';
 
 export default function HomeScreen() {
   const { theme } = useTheme();
-  const db = useSQLiteContext();
+  const db = useAppDb();
 
   const [refreshing, setRefreshing] = useState(false);
   const [wallets, setWallets] = useState<Wallet[]>([]);

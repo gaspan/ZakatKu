@@ -3,7 +3,6 @@ import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { SQLiteProvider } from 'expo-sqlite';
 import {
   useFonts,
   Inter_400Regular,
@@ -13,7 +12,7 @@ import {
 } from '@expo-google-fonts/inter';
 
 import { ThemeProvider, useTheme } from '@/constants/theme';
-import { DATABASE_NAME, migrateDbIfNeeded } from '@/lib/database';
+import { AppDbProvider } from '@/lib/dbProvider';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -60,9 +59,9 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider>
-      <SQLiteProvider databaseName={DATABASE_NAME} onInit={migrateDbIfNeeded}>
+      <AppDbProvider>
         <RootContent />
-      </SQLiteProvider>
+      </AppDbProvider>
     </ThemeProvider>
   );
 }
